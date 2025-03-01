@@ -1,5 +1,6 @@
 import enum
 import typing
+from buzz.locale import _
 
 
 class Shortcut(str, enum.Enum):
@@ -13,13 +14,17 @@ class Shortcut(str, enum.Enum):
         obj.description = description
         return obj
 
-    OPEN_RECORD_WINDOW = ('Ctrl+R', "Open Record Window")
-    OPEN_IMPORT_WINDOW = ('Ctrl+O', "Import File")
-    OPEN_PREFERENCES_WINDOW = ('Ctrl+,', 'Open Preferences Window')
+    OPEN_RECORD_WINDOW = ("Ctrl+R", _("Open Record Window"))
+    OPEN_IMPORT_WINDOW = ("Ctrl+O", _("Import File"))
+    OPEN_IMPORT_URL_WINDOW = ("Ctrl+U", _("Import URL"))
+    OPEN_PREFERENCES_WINDOW = ("Ctrl+,", _("Open Preferences Window"))
 
-    OPEN_TRANSCRIPT_EDITOR = ('Ctrl+E', "Open Transcript Viewer")
-    CLEAR_HISTORY = ('Ctrl+S', "Clear History")
-    STOP_TRANSCRIPTION = ('Ctrl+X', "Cancel Transcription")
+    VIEW_TRANSCRIPT_TEXT = ("Ctrl+E", _("View Transcript Text"))
+    VIEW_TRANSCRIPT_TRANSLATION = ("Ctrl+L", _("View Transcript Translation"))
+    VIEW_TRANSCRIPT_TIMESTAMPS = ("Ctrl+T", _("View Transcript Timestamps"))
+
+    CLEAR_HISTORY = ("Ctrl+S", _("Clear History"))
+    STOP_TRANSCRIPTION = ("Ctrl+X", _("Cancel Transcription"))
 
     @staticmethod
     def get_default_shortcuts() -> typing.Dict[str, str]:

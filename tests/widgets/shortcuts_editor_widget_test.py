@@ -1,12 +1,25 @@
 from PyQt6.QtWidgets import QPushButton, QLabel
+from pytestqt.qtbot import QtBot
 
-from buzz.settings.shortcut import Shortcut
-from buzz.widgets.shortcuts_editor_preferences_widget import ShortcutsEditorPreferencesWidget, SequenceEdit
+from buzz.locale import _
+from buzz.widgets.preferences_dialog.shortcuts_editor_preferences_widget import (
+    ShortcutsEditorPreferencesWidget,
+)
+from buzz.widgets.sequence_edit import SequenceEdit
 
 
 class TestShortcutsEditorWidget:
-    def test_should_reset_to_defaults(self, qtbot):
-        widget = ShortcutsEditorPreferencesWidget(shortcuts=Shortcut.get_default_shortcuts())
+    def test_should_update_shortcuts(self, qtbot: QtBot, shortcuts):
+        widget = ShortcutsEditorPreferencesWidget(shortcuts=shortcuts)
+        qtbot.add_widget(widget)
+
+        sequence_edit = widget.findChild(SequenceEdit)
+        assert sequence_edit.keySequence().toString() == "Ctrl+R"
+        with qtbot.wait_signal(widget.shortcuts_changed, timeout=1000):
+            sequence_edit.setKeySequence("Ctrl+Shift+R")
+
+    def test_should_reset_to_defaults(self, qtbot, shortcuts):
+        widget = ShortcutsEditorPreferencesWidget(shortcuts=shortcuts)
         qtbot.add_widget(widget)
 
         reset_button = widget.findChild(QPushButton)
@@ -17,12 +30,16 @@ class TestShortcutsEditorWidget:
         sequence_edits = widget.findChildren(SequenceEdit)
 
         expected = (
-            ('Open Record Window', 'Ctrl+R'),
-            ('Import File', 'Ctrl+O'),
-            ('Open Preferences Window', 'Ctrl+,'),
-            ('Open Transcript Viewer', 'Ctrl+E'),
-            ('Clear History', 'Ctrl+S'),
-            ('Cancel Transcription', 'Ctrl+X'))
+            (_("Open Record Window"), "Ctrl+R"),
+            (_("Import File"), "Ctrl+O"),
+            (_("Import URL"), "Ctrl+U"),
+            (_("Open Preferences Window"), "Ctrl+,"),
+            (_("View Transcript Text"), "Ctrl+E"),
+            (_("View Transcript Translation"), "Ctrl+L"),
+            (_("View Transcript Timestamps"), "Ctrl+T"),
+            (_("Clear History"), "Ctrl+S"),
+            (_("Cancel Transcription"), "Ctrl+X"),
+        )
 
         for i, (label, sequence_edit) in enumerate(zip(labels, sequence_edits)):
             assert isinstance(label, QLabel)
